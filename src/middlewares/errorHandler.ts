@@ -25,7 +25,7 @@ export const errorHandler = (
   err: unknown,
   req: Request,
   res: Response,
-  _next: NextFunction
+  _: NextFunction
 ) => {
   const isDev = process.env.NODE_ENV !== "production";
 
@@ -80,13 +80,13 @@ export const errorHandler = (
   // Fallback unknown error
   const message =
     typeof err === "object" && err && "message" in err
-      ? String((err as any).message)
+      ? String((err as {message?: string} ).message)
       : "Internal server error";
 
   return res.status(500).json({
     success: false,
     message,
-    ...(isDev && { stack: (err as any)?.stack }),
+    ...(isDev && { stack: (err as {stack?: string})?.stack }),
   });
 };
 
@@ -94,7 +94,7 @@ export const errorHandler = (
 function isMongoDuplicateError(
   err: unknown
 ): err is { code: number; keyValue?: Record<string, unknown> } {
-  return typeof err === "object" && !!err && (err as any).code === 11000;
+  return typeof err === "object" && !!err && (err as {code?: number}).code === 11000;
 }
 function getDuplicateKeyDetail(err: { keyValue?: Record<string, unknown> }) {
   return err.keyValue ?? undefined;
@@ -103,7 +103,7 @@ function isMongooseValidationError(
   err: unknown
 ): err is { name: string; errors: Record<string, { message: string }> } {
   return (
-    typeof err === "object" && !!err && (err as any).name === "ValidationError"
+    typeof err === "object" && !!err && (err as {name?: string}).name === "ValidationError"
   );
 }
 function formatMongooseValidation(err: {
@@ -115,6 +115,6 @@ function formatMongooseValidation(err: {
   }));
 }
 function isJwtError(err: unknown): boolean {
-  const name = (err as any)?.name;
+  const name = (err as {name?: string}).name;
   return name === "JsonWebTokenError" || name === "TokenExpiredError";
 }

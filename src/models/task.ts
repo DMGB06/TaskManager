@@ -47,6 +47,12 @@ export const TaskSchema: Schema = new Schema(
     },
     dueDate: {
       type: Date,
+      validate: {
+        validator: function (value: Date) {
+          return value > new Date();
+        },
+        message: "Due date must be in the future",
+      },
     },
   },
   {

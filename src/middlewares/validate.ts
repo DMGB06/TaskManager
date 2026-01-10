@@ -23,7 +23,7 @@ export const validate = (schema: z.Schema) => {
 
     return res.status(400).json({
       success: false,
-      message: "Validation falided",
+      message: "Validation failed",
       errors,
     });
   };

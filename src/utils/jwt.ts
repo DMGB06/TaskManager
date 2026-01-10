@@ -7,7 +7,7 @@ export const generateToken = (userId: string): string => {
     },
     process.env.JWT_SECRET || "secret",
     {
-      expiresIn: "7d",
+      expiresIn: "1h",
     }
   );
 };
@@ -22,6 +22,6 @@ export const refreshToken = (userId: string): string => {
       id: userId,
     },
     process.env.JWT_REFRESH_SECRET || "refresh_secret",
-    { expiresIn: "30d" }
+    { expiresIn: "7d" }
   );
 };
